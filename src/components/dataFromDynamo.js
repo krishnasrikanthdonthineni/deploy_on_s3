@@ -1,6 +1,7 @@
-import react, { Component} from 'react';
-
-
+import  { Component} from 'react';
+import MUIDataTable from "mui-datatables";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
 class DynamoDB extends Component {
     state = { 
         isLoading : false,
@@ -13,7 +14,7 @@ class DynamoDB extends Component {
         this.setState({details : body});
     }
     render(){
-
+            const columns = ["Id", "Vendor", "Amount", "Date"];
             const isLoading = this.state.isLoading;
             const allDetails = this.state.details;
            
@@ -29,9 +30,35 @@ class DynamoDB extends Component {
 
             if(isLoading)
                 return(<div>.... Loading</div>);
-
+            
+                const options = {
+                    filterType: "dropdown",
+                    responsive: "scroll",
+                    selectableRows : true,
+                    expandableRows: true, // Try Adding This
+                    expandableRowsOnClick: true,
+                    renderExpandableRow: (rowData, rowMeta) => {
+                      console.log(rowData, rowMeta);
+                      return (
+                        <TableRow>
+                          <TableCell colSpan={rowData.length}>
+                            Custom expandable row option. Data: {JSON.stringify(rowData)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                };
 
         return(
+            <diV>
+
+            <MUIDataTable
+            title={"Row Expandable Table Using MUI"}
+            data={allDetails}
+            columns={columns}
+            options={options}
+            />
+            
             <table className="table">
                 <thead>
                     <tr>
@@ -44,8 +71,10 @@ class DynamoDB extends Component {
                 <tbody>
                     {this.state.details.length === 0 ? <td colSpan="4">No details to display</td> : details}
                 </tbody>
-        </table>
+            </table>
+        </diV>
         );
+
     }
 }
 
